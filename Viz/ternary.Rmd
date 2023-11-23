@@ -1,0 +1,266 @@
+---
+title: "ternary"
+author: "Daniel López"
+date: "11/8/2023"
+output: html_document
+---
+
+# E. coli
+## UNbalanced dataset
+```{r}
+library(tidyverse, quietly = T)
+library(magrittr, quietly=T)
+
+e_unbal <- read_csv("~/LANGEBIO/data/ecoli/ecoli_structure_filtered.csv")
+
+```
+
+### Ternary plot
+```{r}
+library(ggtern, quietly = T)
+
+#create data to plot
+e_unbal_str <- data.frame(Helix = e_unbal$helix_percentage,
+                       Coil = e_unbal$coil_percentage,
+                       Sheet = e_unbal$sheet_percentage)
+
+#fixing non-finite values
+e_unbal_str %<>% mutate(
+          Helix = ifelse(Helix == 0, 0.5, Helix),
+          Coil = ifelse(Coil == 0, 0.5, Coil),
+          Sheet = ifelse(Sheet == 0, 0.5, Sheet))
+
+#create ternary plot
+ecoli_tern <- e_unbal_str %>% ggtern(aes(Sheet, Helix, Coil)) +
+              stat_density_tern(geom = 'polygon',
+                                base = 'identity',
+                                expand = 1, h=0.15,
+                                aes(fill = ..level.., alpha = 0.5)) +
+              geom_point(size= 0.6, alpha = 0.5) +
+              scale_fill_gradient(low='yellow', high='red') + 
+              theme_showarrows() +theme(legend.justification=c(0,1), legend.position=c(0,1)) + 
+              guides(fill = guide_colorbar(order=1), alpha='none') + 
+              labs(fill = "Density") +
+              ggtitle("(a)    n=4540")
+
+
+#save plot
+#ggtern::ggsave("~/LANGEBIO/figures/e_unbal_ternary.png", ecoli_tern,
+              #width = 4.5, height = 3.5, units = 'in', dpi = 100)
+              
+
+
+ecoli_tern
+```
+
+## Balanced dataset
+```{r}
+#import data
+e_comp <- read_csv("~/LANGEBIO/data/ecoli/ecoli_complement.csv")
+e_sam <- read_csv("~/LANGEBIO/data/ecoli/samples/ecoli_sample3.csv")
+
+e_bal <- bind_rows(e_comp, e_sam)
+#create data to plot
+e_bal_str <- data.frame(Helix = e_bal$helix_percentage,
+                       Coil = e_bal$coil_percentage,
+                       Sheet = e_bal$sheet_percentage)
+
+#fixing non-finite values
+e_bal_str %<>% mutate(
+          Helix = ifelse(Helix == 0, 0.5, Helix),
+          Coil = ifelse(Coil == 0, 0.5, Coil),
+          Sheet = ifelse(Sheet == 0, 0.5, Sheet))
+
+#create ternary plot
+ecoli_tern2 <- e_bal_str %>% ggtern(aes(Sheet, Helix, Coil)) +
+              stat_density_tern(geom = 'polygon',
+                                base = 'identity',
+                                expand = 1, h=0.15,
+                                aes(fill = ..level.., alpha = 0.5)) +
+              geom_point(size= 0.6, alpha = 0.5) +
+              scale_fill_gradient(low='yellow', high='red') + 
+              theme_showarrows() +theme(legend.justification=c(0,1), legend.position=c(0,1)) + 
+              guides(fill = guide_colorbar(order=1), alpha='none') + 
+              labs(fill = "Density") +
+              ggtitle(" (b)   n=2129")
+
+# PLOTEAR LA DE LOS BALANCEADOS, COMBINAR Y AVERIGUAR EL TAMA;O ADECUADO PARA EL PDF (SI ES COMPLICADO FUSIONAR LAS 2 IMAGENES ESTA BIEN, SOLO SERIAN FIGURAS DISTINTAS)
+#save plot
+#ggtern::ggsave("~/LANGEBIO/figures/e_bal_ternary.png", ecoli_tern2,
+              #width = 4.5, height = 3.5, units = 'in', dpi = 100)
+
+ecoli_tern2
+```
+
+
+# S. aureus
+## UNbalanced dataset
+```{r}
+library(tidyverse, quietly = T)
+library(magrittr, quietly=T)
+
+s_unbal <- read_csv("~/LANGEBIO/data/s/saureus_structure_filtered.csv")
+
+```
+
+### Ternary plot
+```{r}
+library(ggtern, quietly = T)
+
+#create data to plot
+s_unbal_str <- data.frame(Helix = s_unbal$helix_percentage,
+                       Coil = s_unbal$coil_percentage,
+                       Sheet = s_unbal$sheet_percentage)
+
+#fixing non-finite values
+s_unbal_str %<>% mutate(
+          Helix = ifelse(Helix == 0, 0.5, Helix),
+          Coil = ifelse(Coil == 0, 0.5, Coil),
+          Sheet = ifelse(Sheet == 0, 0.5, Sheet))
+
+#create ternary plot
+s_tern <- s_unbal_str %>% ggtern(aes(Sheet, Helix, Coil)) +
+              stat_density_tern(geom = 'polygon',
+                                base = 'identity',
+                                expand = 1, h=0.15,
+                                aes(fill = ..level.., alpha = 0.5)) +
+              geom_point(size= 0.6, alpha = 0.5) +
+              scale_fill_gradient(low='yellow', high='red') + 
+              theme_showarrows() +theme(legend.justification=c(0,1), legend.position=c(0,1)) + 
+              guides(fill = guide_colorbar(order=1), alpha='none') + 
+              labs(fill = "Density") +
+              ggtitle("(c)    n=4099")
+
+#save plot
+#ggtern::ggsave("~/LANGEBIO/figures/s_unbal_ternary.png", s_tern,
+              #width = 4.5, height = 3.5, units = 'in', dpi = 100)
+              
+s_tern
+```
+
+## Balanced dataset
+```{r}
+#import data
+s_comp <- read_csv("~/LANGEBIO/data/s/saureus_complement.csv")
+s_sam <- read_csv("~/LANGEBIO/data/s/samples/saureus_sample2.csv")
+
+s_bal <- bind_rows(s_comp, s_sam)
+#create data to plot
+s_bal_str <- data.frame(Helix = s_bal$helix_percentage,
+                       Coil = s_bal$coil_percentage,
+                       Sheet = s_bal$sheet_percentage)
+
+#fixing non-finite values
+s_bal_str %<>% mutate(
+          Helix = ifelse(Helix == 0, 0.5, Helix),
+          Coil = ifelse(Coil == 0, 0.5, Coil),
+          Sheet = ifelse(Sheet == 0, 0.5, Sheet))
+
+#create ternary plot
+s_tern2 <- s_bal_str %>% ggtern(aes(Sheet, Helix, Coil)) +
+              stat_density_tern(geom = 'polygon',
+                                base = 'identity',
+                                expand = 1, h=0.15,
+                                aes(fill = ..level.., alpha = 0.5)) +
+              geom_point(size= 0.6, alpha = 0.5) +
+              scale_fill_gradient(low='yellow', high='red') + 
+              theme_showarrows() +theme(legend.justification=c(0,1), legend.position=c(0,1)) + 
+              guides(fill = guide_colorbar(order=1), alpha='none') + 
+              labs(fill = "Density") +
+              ggtitle(" (d)   n=1839")
+
+#ggtern::ggsave("~/LANGEBIO/figures/s_bal_ternary.png", s_tern2,
+              #width = 4.5, height = 3.5, units = 'in', dpi = 100)
+
+s_tern2
+```
+
+# P. aeruginosa
+## UNbalanced dataset
+```{r}
+p_unbal <- read_csv("~/LANGEBIO/data/p/paeruginosa_structure_filtered.csv")
+
+```
+
+### Ternary plot
+```{r}
+
+#create data to plot
+p_unbal_str <- data.frame(Helix = p_unbal$helix_percentage,
+                       Coil = p_unbal$coil_percentage,
+                       Sheet = p_unbal$sheet_percentage)
+
+#fixing non-finite values
+p_unbal_str %<>% mutate(
+          Helix = ifelse(Helix == 0, 0.5, Helix),
+          Coil = ifelse(Coil == 0, 0.5, Coil),
+          Sheet = ifelse(Sheet == 0, 0.5, Sheet))
+
+#create ternary plot
+p_tern <- p_unbal_str %>% ggtern(aes(Sheet, Helix, Coil)) +
+              stat_density_tern(geom = 'polygon',
+                                base = 'identity',
+                                expand = 1, h=0.15,
+                                aes(fill = ..level.., alpha = 0.5)) +
+              geom_point(size= 0.6, alpha = 0.5) +
+              scale_fill_gradient(low='yellow', high='red') + 
+              theme_showarrows() +theme(legend.justification=c(0,1), legend.position=c(0,1)) + 
+              guides(fill = guide_colorbar(order=1), alpha='none') + 
+              labs(fill = "Density") +
+              ggtitle("(e)    n=2499")
+
+#save plot
+#ggtern::ggsave("~/LANGEBIO/figures/p_unbal_ternary.png", p_tern,
+              #width = 4.5, height = 3.5, units = 'in', dpi = 100)
+              
+p_tern
+```
+
+## Balanced dataset
+```{r}
+#import data
+p_comp <- read_csv("~/LANGEBIO/data/p/paeruginosa_complement.csv")
+p_sam <- read_csv("~/LANGEBIO/data/p/samples/paeruginosa_sample1.csv")
+
+p_bal <- bind_rows(p_comp, p_sam)
+#create data to plot
+p_bal_str <- data.frame(Helix = p_bal$helix_percentage,
+                       Coil = p_bal$coil_percentage,
+                       Sheet = p_bal$sheet_percentage)
+
+#fixing non-finite values
+p_bal_str %<>% mutate(
+          Helix = ifelse(Helix == 0, 0.5, Helix),
+          Coil = ifelse(Coil == 0, 0.5, Coil),
+          Sheet = ifelse(Sheet == 0, 0.5, Sheet))
+
+#create ternary plot
+p_tern2 <- p_bal_str %>% ggtern(aes(Sheet, Helix, Coil)) +
+              stat_density_tern(geom = 'polygon',
+                                base = 'identity',
+                                expand = 1, h=0.15,
+                                aes(fill = ..level.., alpha = 0.5)) +
+              geom_point(size= 0.6, alpha = 0.5) +
+              scale_fill_gradient(low='yellow', high='red') + 
+              theme_showarrows() +theme(legend.justification=c(0,1), legend.position=c(0,1)) + 
+              guides(fill = guide_colorbar(order=1), alpha='none') + 
+              labs(fill = "Density") +
+              ggtitle(" (f)   n=1202")
+
+#ggtern::ggsave("~/LANGEBIO/figures/p_bal_ternary.png", p_tern2,
+              #width = 4.5, height = 3.5, units = 'in', dpi = 100)
+
+p_tern2
+```
+
+
+### Combine both plots into a single image
+```{r, eval=FALSE, include=FALSE}
+library(ggpubr)
+
+# tern_layout <- patchwork::plot_layout(nrow = 1, ncol = 2,
+#                        ecoli_tern + plot_spacer() + 
+#                              (ecoli_tern2 + plot_spacer() + saureus_tern) / (plot_spacer() + paeruginosa_tern + plot_spacer())
+# #save layout
+ggarrange(ecoli_tern, ecoli_tern2, nrow=1, ncol=2)
+```
